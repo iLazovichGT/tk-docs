@@ -1,0 +1,43 @@
+<!doctype html>
+<!--
+  Transp_IP_Chek — веб-приложение документооборота ИП (счета, акты, договоры) на Google-таблице
+  © Ирина Мальцева | maltsevaie@gmail.com
+  Все права защищены. Копирование и распространение без разрешения автора запрещено.
+
+  demo.html — короткая ссылка и иконка демо: сразу переходит в приложение (вход — Google-аккаунтом).
+  ?install — не переходить, показать, как добавить иконку на экран «Домой».
+-->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ДемоТранс — документы</title>
+<meta name="apple-mobile-web-app-title" content="ДемоТранс">
+<link rel="icon" type="image/png" href="demo-favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="demo-icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A7F78">
+<style>
+  :root { --bg:#EEF1F4; --fg:#1D1F22; --fg2:#4A5057; --fill:#0A7F78; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0E1416; --fg:#EFF4F5; --fg2:#B2BFC2; } }
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:24px;
+    box-sizing:border-box; background:var(--bg); color:var(--fg); font:17px/1.45 -apple-system,"Segoe UI",sans-serif; text-align:center; }
+  img { width:96px; height:96px; border-radius:22px; }
+  a.btn { display:inline-block; padding:14px 28px; border-radius:9999px; background:var(--fill); color:#fff; font-weight:600; text-decoration:none; }
+  p { color:var(--fg2); max-width:420px; margin:0; }
+</style>
+</head>
+<body>
+<img src="demo-icon-180.png" alt="">
+<h1 style="margin:0;font-size:24px">ДемоТранс</h1>
+<p style="margin-top:-12px">Счета, акты, договоры — демо</p>
+<a class="btn" id="go" href="#">Открыть программу</a>
+<p id="tip" hidden>Чтобы иконка была на телефоне: в Safari нажмите «Поделиться» → «На экран „Домой“».</p>
+<script>
+  var APP = 'https://script.google.com/macros/s/AKfycbw56AzkaOUOwFSkppv3HjOZrLp1i14CZ9BPxiEZEfna-k269FEklSHhXy9Qrf8ZhL4/exec';
+  document.getElementById('go').href = APP;
+  if (/[?&]install/.test(location.search)) document.getElementById('tip').hidden = false;
+  else location.replace(APP);
+</script>
+</body>
+</html>
