@@ -44,7 +44,7 @@
 <p id="tip" hidden>Чтобы иконка была на телефоне: в Safari нажмите «Поделиться» → «На экран „Домой“».<br><br><a id="open" href="#">Открыть программу</a></p>
 <script>
   var APP = 'https://script.google.com/macros/s/AKfycbw56AzkaOUOwFSkppv3HjOZrLp1i14CZ9BPxiEZEfna-k269FEklSHhXy9Qrf8ZhL4/exec';
-  var READY_MS = 9000, NO_FRAME_DAYS = 3, KEY = 'tkdocs_noframe';
+  var READY_MS = 25000, NO_FRAME_DAYS = 1, KEY = 'tkdocs_noframe2';   // первый запуск Google за день бывает долгим (21.10: 9 с не хватало)
   var q = location.search;
   document.getElementById('open').href = APP;
   function direct() { location.replace(APP); }
