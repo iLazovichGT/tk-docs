@@ -36,6 +36,16 @@
   .ring { width:40px; height:40px; border-radius:50%; border:4px solid rgba(10,127,120,.2); border-top-color:var(--fill); animation:spin .8s linear infinite; }
   @keyframes spin { to { transform:rotate(360deg); } }
   #app { position:fixed; inset:0; width:100%; height:100%; border:0; z-index:10; background:transparent; }
+  #print-root { display:none; }
+  @media print {
+    @page { size:A4; margin:0; }
+    html, body { height:auto !important; overflow:visible !important; display:block !important; padding:0 !important; margin:0 !important; background:#fff !important; }
+    body > *:not(#print-root) { display:none !important; }
+    #print-root { display:block; }
+    .print-page { width:210mm; height:296mm; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .print-page + .print-page { break-before:page; page-break-before:always; }
+    .print-page img { width:auto; height:auto; max-width:100%; max-height:100%; border-radius:0; background:none; }
+  }
 </style>
 </head>
 <body>
@@ -55,6 +65,23 @@
   if (/[?&]install/.test(q)) { document.getElementById('tip').hidden = false; document.getElementById('ring').hidden = true; }
   else if (/[?&]direct/.test(q)) location.replace(APP);
   else {
+  // Печать с телефона (24.11): телефон печатает только внешнюю страницу (эту), а не рамку программы — поэтому программа
+  // присылает сюда готовые листы (картинки страниц PDF), а печатаем отсюда. Принимаем только картинки data:image.
+  function printPages(d, ev) {
+    var root = document.getElementById('print-root');
+    if (!root) { root = document.createElement('div'); root.id = 'print-root'; document.body.appendChild(root); }
+    root.innerHTML = '';
+    var wait = d.pages.filter(function (u) { return /^data:image\/(png|jpeg);base64,/.test(String(u)); }).map(function (u) {
+      var box = document.createElement('div'), im = document.createElement('img');
+      box.className = 'print-page'; im.src = u; box.appendChild(im); root.appendChild(box);
+      return new Promise(function (ok) { if (im.complete) ok(); else { im.onload = ok; im.onerror = ok; } });
+    });
+    if (!wait.length) return;
+    Promise.all(wait).then(function () {
+      try { ev.source.postMessage({ tkdocs: 'printing', id: d.id }, ev.origin); } catch (e) {}
+      setTimeout(function () { window.print(); }, 100);
+    });
+  }
     var ok = false, f = document.createElement('iframe');
     window.addEventListener('message', function (ev) {
       // только от Google, где живёт приложение
@@ -64,6 +91,7 @@
       if (d.tkdocs === 'session' && /^[a-f0-9]{64}$/.test(String(d.st || ''))) setTok(d.st);
       if (d.tkdocs === 'logout') setTok('');
       if (d.tkdocs === 'reload') location.reload();
+      if (d.tkdocs === 'print' && Array.isArray(d.pages)) printPages(d, ev);
     });
     f.id = 'app';
     f.setAttribute('allow', 'web-share; clipboard-write; fullscreen');
