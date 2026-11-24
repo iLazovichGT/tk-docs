@@ -68,6 +68,7 @@
   // Печать с телефона (24.11): телефон печатает только внешнюю страницу (эту), а не рамку программы — поэтому программа
   // присылает сюда готовые листы (картинки страниц PDF), а печатаем отсюда. Принимаем только картинки data:image.
   function printPages(d, ev) {
+    try { ev.source.postMessage({ tkdocs: 'printing', id: d.id }, ev.origin); } catch (e) {}   // сразу: «получила, печатаю»
     var root = document.getElementById('print-root');
     if (!root) { root = document.createElement('div'); root.id = 'print-root'; document.body.appendChild(root); }
     root.innerHTML = '';
@@ -78,7 +79,6 @@
     });
     if (!wait.length) return;
     Promise.all(wait).then(function () {
-      try { ev.source.postMessage({ tkdocs: 'printing', id: d.id }, ev.origin); } catch (e) {}
       setTimeout(function () { window.print(); }, 100);
     });
   }
