@@ -42,9 +42,11 @@
     html, body { height:auto !important; overflow:visible !important; display:block !important; padding:0 !important; margin:0 !important; background:#fff !important; }
     body > *:not(#print-root) { display:none !important; }
     #print-root { display:block; }
-    .print-page { width:210mm; height:296mm; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    /* без точной высоты листа: телефон добавляет свои поля, лист 296 мм переползал на следующую страницу — пустой лист
+       после каждого (24.11). Картинка ужимается по ширине и не выше 250 мм — влезает и в A4, и в Letter (279 мм, у телефона бывает по умолчанию) с полями. */
+    .print-page { break-inside:avoid; page-break-inside:avoid; }
     .print-page + .print-page { break-before:page; page-break-before:always; }
-    .print-page img { width:auto; height:auto; max-width:100%; max-height:100%; border-radius:0; background:none; }
+    .print-page img { display:block; margin:0 auto; width:auto; height:auto; max-width:100%; max-height:250mm; border-radius:0; background:none; }
   }
 </style>
 </head>
